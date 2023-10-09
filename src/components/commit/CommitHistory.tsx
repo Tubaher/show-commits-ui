@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { CommitElement, CommitsResponse } from "../../api/commits.api";
 import CommitList from "./CommitList";
+import Note from "../note/Note";
 const history_api = import.meta.env.VITE_GITHUB_HISTORY_API;
 
 function CommitHistory() {
@@ -30,6 +31,17 @@ function CommitHistory() {
         <h1 className="text-3xl font-bold mb-6 text-indigo-500">
           Commit History
         </h1>
+        <Note>
+          <p>
+            The CommitList components uses the{" "}
+            <span className="font-semibold">GET /commits</span> endpoint to
+            retrieve the commit History. It receives two possible query
+            parameters: <span className="font-semibold">page</span> and{" "}
+            <span className="font-semibold">perPage</span>. The default values
+            are 1 and 10 respectively. To see how the pagination works hover the
+            navigation buttons below the list.
+          </p>
+        </Note>
         <div className="bg-white shadow-lg rounded-lg p-6">
           <CommitList commits={commits} />
 

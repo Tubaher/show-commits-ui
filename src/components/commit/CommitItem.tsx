@@ -23,7 +23,7 @@ function CommitItem({ commit }: CommitItemProps) {
         href={commit.html_url}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-indigo-600 hover:underline block mb-2 group-hover:text-purple-400"
+        className="text-indigo-600 hover:underline block mb-2 group-hover:text-purple-600"
       >
         {commit.commit.message}
       </a>
