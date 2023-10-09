@@ -1,4 +1,4 @@
-import { CommitElement } from "../api/commits.api";
+import { CommitElement } from "../../api/commits.api";
 
 interface CommitItemProps {
   commit: CommitElement;

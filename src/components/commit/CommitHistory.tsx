@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { CommitElement, CommitsResponse } from "../api/commits.api";
+import { CommitElement, CommitsResponse } from "../../api/commits.api";
 import CommitList from "./CommitList";
 const history_api = import.meta.env.VITE_GITHUB_HISTORY_API;
 
 function CommitHistory() {
   const [commits, setCommits] = useState<CommitElement[]>([]);
   const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const commitsPerPage = 10;
 
   useEffect(() => {
@@ -16,6 +17,7 @@ function CommitHistory() {
       )
       .then((response) => {
         setCommits(response.data.commits);
+        setTotalPages(response.data.totalPages);
       })
       .catch((error) => {
         console.error("Error fetching commits:", error);
@@ -45,12 +47,10 @@ function CommitHistory() {
             <span className="text-gray-700">{page}</span>
 
             <button
+              disabled={!(page < totalPages)}
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={commits.length < commitsPerPage}
               className={`px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none ${
-                commits.length < commitsPerPage
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
+                !(page < totalPages) ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
               Next

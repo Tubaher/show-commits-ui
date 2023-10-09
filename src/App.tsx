@@ -1,4 +1,4 @@
-import CommitHistory from "./components/CommitHistory";
+import CommitHistory from "./components/commit/CommitHistory";
 
 function App() {
   return (
