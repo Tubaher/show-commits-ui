@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { CommitElement, CommitsResponse } from "../api/commits.api";
+import CommitList from "./CommitList";
 const history_api = import.meta.env.VITE_GITHUB_HISTORY_API;
 
 function CommitHistory() {
@@ -21,40 +22,14 @@ function CommitHistory() {
       });
   }, [page]);
 
-  const formatDate = (dateString: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-gray-700">
+        <h1 className="text-3xl font-bold mb-6 text-indigo-500">
           Commit History
         </h1>
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <ul>
-            {commits.map((commit) => (
-              <li key={commit.sha} className="mb-4 border-b pb-4 last:border-0">
-                <a
-                  href={commit.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline block mb-2"
-                >
-                  {commit.commit.message}
-                </a>
-                <span className="text-gray-600">
-                  {commit.commit.author.name} •{" "}
-                  {formatDate(commit.commit.author.date)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <CommitList commits={commits} />
 
           <div className="mt-6 flex justify-between">
             <button
