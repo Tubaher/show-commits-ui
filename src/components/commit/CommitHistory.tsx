@@ -3,6 +3,7 @@ import axios from "axios";
 import { CommitElement, CommitsResponse } from "../../api/commits.api";
 import CommitList from "./CommitList";
 import Note from "../note/Note";
+import { Tooltip } from "react-tooltip";
 const history_api = import.meta.env.VITE_GITHUB_HISTORY_API;
 
 function CommitHistory() {
@@ -11,7 +12,7 @@ function CommitHistory() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const commitsPerPage = 10;
 
-  useEffect(() => {
+  const fetchCommits = () => {
     axios
       .get<CommitsResponse>(
         `${history_api}commits?page=${page}&per_page=${commitsPerPage}`
@@ -23,7 +24,15 @@ function CommitHistory() {
       .catch((error) => {
         console.error("Error fetching commits:", error);
       });
+  };
+
+  useEffect(() => {
+    fetchCommits();
   }, [page]);
+
+  const handleRefresh = () => {
+    fetchCommits();
+  };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
@@ -42,32 +51,70 @@ function CommitHistory() {
             navigation buttons below the list.
           </p>
         </Note>
+
+        <button
+          onClick={handleRefresh}
+          className="px-4 py-2 mb-3 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none"
+        >
+          Refresh
+        </button>
+
         <div className="bg-white shadow-lg rounded-lg p-6">
           <CommitList commits={commits} />
 
           <div className="mt-6 flex justify-between">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-              className={`px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none ${
-                page === 1 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              Previous
-            </button>
+            <Tooltip anchorSelect=".prev-btn" place="bottom">
+              When it is hit the "page" parameter is decreased by one, and the
+              <br />
+              api is called with "Get /commits" and the new value of "page" as
+              <br />
+              query parameter.
+            </Tooltip>
+            <a className="prev-btn">
+              <button
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                disabled={page === 1}
+                className={`px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none ${
+                  page === 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Previous
+              </button>
+            </a>
 
             <span className="text-gray-700">{page}</span>
 
-            <button
-              disabled={!(page < totalPages)}
-              onClick={() => setPage((prev) => prev + 1)}
-              className={`px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none ${
-                !(page < totalPages) ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              Next
-            </button>
+            <Tooltip anchorSelect=".next-btn" place="bottom">
+              When it is hit the "page" parameter is increased by one, and the
+              <br />
+              api is called with "Get /commits" and the new value of "page" as
+              <br />
+              query parameter.
+            </Tooltip>
+
+            <a className="next-btn">
+              <button
+                disabled={!(page < totalPages)}
+                onClick={() => setPage((prev) => prev + 1)}
+                className={`px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 focus:outline-none ${
+                  !(page < totalPages) ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Next
+              </button>
+            </a>
           </div>
+        </div>
+        <div className="mt-6">
+          <Note>
+            <p>
+              The <span className="font-semibold">GET /commits</span> endpoint
+              returns a list of commits and metadata. Here, we display the
+              "page" property, and the button "Next" will be available is the
+              "page" property is less than the "totalPages" property. The same
+              logic is applied to the "Previous" button.
+            </p>
+          </Note>
         </div>
       </div>
     </div>
